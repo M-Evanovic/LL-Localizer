@@ -53,7 +53,7 @@ rosbag play yourbag.bag
 ```
 roslaunch ll_localizer localizer_velodyne.launch
 ```
-- After loading the prior map, provide a rough ```2D Pose Estimate``` in ```rviz```.  
+- After loading the prior map, provide a rough ```2D Pose Estimate``` in ```rviz```. (Notice: Since ```2D Pose Estimation``` can only provide the initial x and y coordinates, users can specify the initial z coordinate by adjusting the ```/localization_param/init_height``` in ```/config/config.yaml```.)  
 - Finally play your rosbags:
 ```
 rosbag play yourbag.bag

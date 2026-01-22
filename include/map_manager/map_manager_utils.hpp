@@ -85,7 +85,7 @@ public:
                 results.emplace_back(pt);
             }
 
-            return results.size() >= 3;
+            return results.size() >= options::MIN_NUM_MATCH_POINTS;
         } else {
             return false;
         }
@@ -105,7 +105,7 @@ public:
                 results.emplace_back(pt);
             }
 
-            return results.size() >= 3;
+            return results.size() >= options::MIN_NUM_MATCH_POINTS;
         } else {
             return false;
         }
@@ -126,7 +126,7 @@ public:
             }
         }
 
-        return results.size() >= 3;
+        return results.size() >= options::MIN_NUM_MATCH_POINTS;
     }
 
     void AddTempToStatic(pcl::PointCloud<pcl::PointXYZ>::Ptr &new_points) {

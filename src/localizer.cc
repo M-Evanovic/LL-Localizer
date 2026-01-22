@@ -262,6 +262,7 @@ void Localizer::Run() {
     }
     scan_down_world->resize(cur_pts);
     nearest_points.resize(cur_pts);
+    weights.resize(cur_pts, 1.0f);
     residuals.resize(cur_pts, 0);
     point_selected_surf.resize(cur_pts, true);
     plane_coef.resize(cur_pts, common::V4F::Zero());
@@ -475,8 +476,8 @@ void Localizer::ObsModel(state_ikfom &s, esekfom::dyn_share_datastruct<double> &
                     point_selected_surf[i] = map_manager->SearchCorrespondMapPoints(point_world, points_near);
                     search_mtx.unlock();
                     if (point_selected_surf[i]) {
-                        point_selected_surf[i] =
-                            common::esti_plane(plane_coef[i], points_near, options::ESTI_PLANE_THRESHOLD);
+                        weights[i] = 1.0f + (point_selected_surf[i] - 2) * 0.2;
+                        point_selected_surf[i] = common::esti_plane(plane_coef[i], points_near, options::ESTI_PLANE_THRESHOLD);
                     }
                 }
 
@@ -488,7 +489,7 @@ void Localizer::ObsModel(state_ikfom &s, esekfom::dyn_share_datastruct<double> &
                     bool valid_corr = p_body.norm() > 81 * pd2 * pd2;
                     if (valid_corr) {
                         point_selected_surf[i] = true;
-                        residuals[i] = pd2;
+                        residuals[i] = pd2 * weights[i];
                     } else {
                         point_selected_surf[i] = false;
                     }

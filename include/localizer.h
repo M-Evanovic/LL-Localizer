@@ -106,6 +106,7 @@ class Localizer {
     common::VV4F corr_pts;                           // inlier pts
     common::VV4F corr_norm;                          // inlier plane norms
     pcl::VoxelGrid<PointType> voxel_scan;            // voxel filter for current scan
+    std::vector<float> weights;
     std::vector<float> residuals;                    // point-to-plane residuals
     std::vector<char> point_selected_surf;           // selected points
     common::VV4F plane_coef;                         // plane coeffs

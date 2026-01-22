@@ -85,10 +85,10 @@ public:
         }
     }
 
-    bool SearchCorrespondMapPoints(const PointType &point, PointVector &correspond_points) {
+    int SearchCorrespondMapPoints(const PointType &point, PointVector &correspond_points) {
         Point3f pt3f(point.x, point.y, point.z);
 
-        bool search_success = false;
+        int search_success = 0;
 
         Voxel voxel(point.x, point.y, point.z, block_size);
         VoxelHashMap::iterator search = voxel_hash_map.find(voxel);
@@ -96,24 +96,20 @@ public:
             VoxelBlock &voxel_block = search.value();
             if (voxel_block.is_origin) {
                 search_success = voxel_block.SearchFromOriginMapPoints(pt3f, search_radius, correspond_points);
-
-                if (search_success) return true;
+                if (search_success) return 3;
             }
     
             search_success = voxel_block.SearchFromStaticMapPoints(pt3f, search_radius, correspond_points);
-
-            if (search_success) {
-                return true;
-            } else {
-                search_success = voxel_block.SearchFromTemporaryMapPoints(pt3f, search_radius, correspond_points);
-
-                AddPoint(point);
-                
-                return search_success;
-            }
+            if (search_success) return 2;
+            
+            search_success = voxel_block.SearchFromTemporaryMapPoints(pt3f, search_radius, correspond_points);
+            AddPoint(point);
+            if (search_success) return 1;
+            else return 0;
+            
         } else {
             AddPoint(point);
-            return false;
+            return 0;
         }
     }
 
