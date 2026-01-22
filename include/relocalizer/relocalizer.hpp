@@ -1,5 +1,5 @@
-#ifndef RELOCALIZER_HPP
-#define RELOCALIZER_HPP
+#ifndef _LL_LOCALIZER_RELOCALIZER_HPP_
+#define _LL_LOCALIZER_RELOCALIZER_HPP_
 
 #include <chrono>
 #include <iostream>

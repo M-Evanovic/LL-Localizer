@@ -1,5 +1,5 @@
-#ifndef MAP_MANAGER_HPP
-#define MAP_MANAGER_HPP
+#ifndef _LL_LOCALIZER_MAP_MANAGER_HPP_
+#define _LL_LOCALIZER_MAP_MANAGER_HPP_
 
 #include <iostream>
 #include <ros/ros.h>

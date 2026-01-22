@@ -1,5 +1,5 @@
-#ifndef _LL_LOCALIZER_USE_IKFOM_H
-#define _LL_LOCALIZER_USE_IKFOM_H
+#ifndef _LL_LOCALIZER_USE_IKFOM_H_
+#define _LL_LOCALIZER_USE_IKFOM_H_
 
 #include "IKFoM_toolkit/esekfom/esekfom.hpp"
 

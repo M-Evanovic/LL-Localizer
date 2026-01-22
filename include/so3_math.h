@@ -1,5 +1,5 @@
-#ifndef _LL_LOCALIZER_SO3_MATH_H
-#define _LL_LOCALIZER_SO3_MATH_H
+#ifndef _LL_LOCALIZER_SO3_MATH_H_
+#define _LL_LOCALIZER_SO3_MATH_H_
 
 #include <Eigen/Core>
 #include <cmath>

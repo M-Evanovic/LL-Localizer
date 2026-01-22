@@ -1,5 +1,5 @@
-#ifndef MAP_MANAGER_UTILS_HPP
-#define MAP_MANAGER_UTILS_HPP
+#ifndef _LL_LOCALIZER_MAP_MANAGER_UTILS_HPP_
+#define _LL_LOCALIZER_MAP_MANAGER_UTILS_HPP_
 
 #include <iostream>
 #include <math.h>

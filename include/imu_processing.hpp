@@ -1,5 +1,5 @@
-#ifndef _LL_LOCALIZER_IMU_PROCESSING_H
-#define _LL_LOCALIZER_IMU_PROCESSING_H
+#ifndef _LL_LOCALIZER_IMU_PROCESSING_H_
+#define _LL_LOCALIZER_IMU_PROCESSING_H_
 
 #include <glog/logging.h>
 #include <nav_msgs/Odometry.h>

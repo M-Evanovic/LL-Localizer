@@ -1,5 +1,5 @@
-#ifndef _OCTREE_HPP_
-#define _OCTREE_HPP_
+#ifndef _LL_LOCALIZER__OCTREE_HPP_
+#define _LL_LOCALIZER__OCTREE_HPP_
 
 #include <stdint.h>
 
