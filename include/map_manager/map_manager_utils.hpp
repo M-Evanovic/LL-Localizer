@@ -134,7 +134,9 @@ public:
             int sample_x = std::fabs(std::fmod(pt.x, block_size) / block_resolution);
             int sample_y = std::fabs(std::fmod(pt.y, block_size) / block_resolution);
             int sample_z = std::fabs(std::fmod(pt.z, block_size) / block_resolution);
-            int sample_place = sample_x + sample_y * block_size / block_resolution + sample_z * block_size / block_resolution * block_size / block_resolution;
+            int sample_place = sample_x  + 
+                               sample_y * block_size / block_resolution + 
+                               sample_z * block_size / block_resolution * block_size / block_resolution;
             
             if (!sample_array[sample_place]) {
                 static_map_points.emplace_back(pt);
@@ -152,6 +154,7 @@ public:
         if (is_origin && incre_temporary_map_points_num > origin_map_points_num) {
             origin_map_points.clear();
             std::vector<Point3f>().swap(origin_map_points);
+            origin_map_points_octree.clear();
             is_origin = false;
         }
     }
