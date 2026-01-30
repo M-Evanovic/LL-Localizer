@@ -1,6 +1,6 @@
 <div align="center">
   <h1>LL-Localizer</h1>
-  <h2>A Life-Long Localization System based on Dynamic i-Octree</h2>
+  <h2>A Lifelong Localization System based on Dynamic i-Octree</h2>
   <p><strong>Xinyi Li, Shenghai Yuan, Haoxin Cai, Shunan Lu, Wenhua Wang, and Jianqi Liu</strong></p>
   <br>
 
