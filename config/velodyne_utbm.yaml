@@ -47,7 +47,7 @@ cube_side_length: 1000
 esti_plane_threshold: 0.1        # default=0.1
 
 localization_param:
-    map_file_name: "gate_03"
+    map_file_name: "origin_map"
     init_height: 0.2
 
 relocalization_param:
