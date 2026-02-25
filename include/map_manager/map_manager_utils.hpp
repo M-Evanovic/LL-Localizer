@@ -48,7 +48,7 @@ public:
 
 class VoxelBlock {
 public:
-    explicit VoxelBlock(double size = 1.0, double resolution = 0.1, int threshold = 20) : 
+    explicit VoxelBlock(double size = 1.0, double resolution = 0.2, int threshold = 20) : 
     block_size(size), 
     block_resolution(resolution),
     temporary_map_points_threshold(threshold) {

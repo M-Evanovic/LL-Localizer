@@ -24,7 +24,7 @@ mapping:
                    0, 0, 1]
 
 publish:
-    path_publish_en:  false
+    path_publish_en:  true
     scan_publish_en:  true       # false: close all the point cloud output
     scan_effect_pub_en: true    # true: publish the pointscloud of effect point
     dense_publish_en: false       # false: low down the points number in a global-frame point clouds scan.
@@ -57,7 +57,7 @@ relocalization_param:
 
 manager_param:
     block_size: 1.0
-    block_resolution: 0.25
+    block_resolution: 0.2
     temporary_map_points_threshold: 20
     global_map_filter_leaf_size: 0.3
     search_radius: 0.5

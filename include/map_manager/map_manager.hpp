@@ -18,7 +18,7 @@ public:
 
     MapManager(ros::NodeHandle &_nh) : nh(_nh){
         nh.param<double>("manager_param/block_size", block_size, 1.0);
-        nh.param<double>("manager_param/block_resolution", block_resolution, 0.1);
+        nh.param<double>("manager_param/block_resolution", block_resolution, 0.2);
         nh.param<int>("manager_param/temporary_map_points_threshold", temporary_map_points_threshold, 20);
         
         nh.param<double>("manager_param/global_map_filter_leaf_size", global_map_filter_leaf_size, 0.3);
