@@ -30,10 +30,10 @@ publish:
     dense_publish_en: false       # false: low down the points number in a global-frame point clouds scan.
     scan_bodyframe_pub_en: true  # true: output the point cloud scans in IMU-body-frame
 
-path_save_en: true                 # 保存轨迹，用于精度计算和比较
+path_save_en: false                 # 保存轨迹，用于精度计算和比较
 
 pcd_save:
-    pcd_save_en: true
+    pcd_save_en: false
     interval: -1                 # how many LiDAR frames saved in each pcd file; 
                                  # -1 : all frames will be saved in ONE pcd file, may lead to memory crash when having too much frames.
 
@@ -47,7 +47,7 @@ cube_side_length: 1000
 esti_plane_threshold: 0.1        # default=0.1
 
 localization_param:
-    map_file_name: "gate_01"
+    map_file_name: "gate_03"
     init_height: 0.2
 
 relocalization_param:
@@ -57,7 +57,7 @@ relocalization_param:
 
 manager_param:
     block_size: 1.0
-    block_resolution: 0.2
+    block_resolution: 0.25
     temporary_map_points_threshold: 20
     global_map_filter_leaf_size: 0.3
     search_radius: 0.5

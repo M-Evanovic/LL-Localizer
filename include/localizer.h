@@ -55,6 +55,7 @@ class Localizer {
     void PublishFrameWorld();
     void PublishFrameBody(const ros::Publisher &pub_laser_cloud_body);
     void PublishFrameEffectWorld(const ros::Publisher &pub_laser_cloud_effect_world);
+    void PublishUpdatedMap(const ros::Publisher &pub_updated_map);
     void Savetrajectory(const std::string &traj_file);
 
     void Finish();
@@ -99,6 +100,7 @@ class Localizer {
 
     /// point clouds data
     CloudPtr origin_map{new PointCloudType()};
+    pcl::PointCloud<pcl::PointXYZ>::Ptr updated_map{new pcl::PointCloud<pcl::PointXYZ>()};
     CloudPtr scan_undistort{new PointCloudType()};   // scan after undistortion
     CloudPtr scan_down_body{new PointCloudType()};   // downsampled scan in body
     CloudPtr scan_down_world{new PointCloudType()};  // downsampled scan in world
@@ -118,6 +120,7 @@ class Localizer {
     ros::Publisher pub_laser_cloud_world;
     ros::Publisher pub_laser_cloud_body;
     ros::Publisher pub_laser_cloud_effect_world;
+    ros::Publisher pub_updated_map;
     ros::Publisher pub_odom_aft_mapped;
     ros::Publisher pub_path;
     std::string tf_imu_frame;

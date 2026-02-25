@@ -197,6 +197,7 @@ void Localizer::SubAndPubToROS(ros::NodeHandle &nh) {
     pub_laser_cloud_world = nh.advertise<sensor_msgs::PointCloud2>("/cloud_registered", 100000);
     pub_laser_cloud_body = nh.advertise<sensor_msgs::PointCloud2>("/cloud_registered_body", 100000);
     pub_laser_cloud_effect_world = nh.advertise<sensor_msgs::PointCloud2>("/cloud_registered_effect_world", 100000);
+    pub_updated_map = nh.advertise<sensor_msgs::PointCloud2>("/updated_map", 100000);
     pub_odom_aft_mapped = nh.advertise<nav_msgs::Odometry>("/Odometry", 100000);
     pub_path = nh.advertise<nav_msgs::Path>("/path", 100000);
 }
@@ -212,6 +213,7 @@ void Localizer::Run() {
         LOG(WARNING) << "No point, skip this scan!";
         return;
     }
+    updated_map->clear();
 
     /// the first scan
     if (flg_first_scan) {
@@ -221,7 +223,7 @@ void Localizer::Run() {
             for (int i = 0; i < scan_undistort->size(); i++) {
                 PointBodyToWorld(&scan_undistort->points[i], &scan_down_world->points[i]);
             }
-            map_manager->AddPoints(scan_down_world->points);
+            map_manager->AddPoints(scan_down_world->points, updated_map);
         } else if (!get_inital_pose) {
             ROS_INFO("\033[1;33m Waiting for Init Pose \033[0m");
             return;
@@ -233,7 +235,7 @@ void Localizer::Run() {
             for (int i = 0; i < scan_undistort->size(); i++) {
                 PointBodyToWorld(&scan_undistort->points[i], &scan_down_world->points[i]);
             }
-            map_manager->AddPoints(scan_down_world->points);
+            map_manager->AddPoints(scan_down_world->points, updated_map);
         }
         
         first_lidar_time = measures.lidar_bag_time;
@@ -298,6 +300,7 @@ void Localizer::Run() {
         }
         if (scan_pub_en || pcd_save_en) {
             PublishFrameWorld();
+            PublishUpdatedMap(pub_updated_map);
         }
         if (scan_pub_en && scan_body_pub_en) {
             PublishFrameBody(pub_laser_cloud_body);
@@ -473,7 +476,7 @@ void Localizer::ObsModel(state_ikfom &s, esekfom::dyn_share_datastruct<double> &
                     /** Find the closest surfaces in the map **/
                     points_near.clear();
                     search_mtx.lock();
-                    point_selected_surf[i] = map_manager->SearchCorrespondMapPoints(point_world, points_near);
+                    point_selected_surf[i] = map_manager->SearchCorrespondMapPoints(point_world, points_near, updated_map);
                     search_mtx.unlock();
                     if (point_selected_surf[i]) {
                         weights[i] = 1.0f + (point_selected_surf[i] - 2) * 0.2;
@@ -681,6 +684,18 @@ void Localizer::PublishFrameEffectWorld(const ros::Publisher &pub_laser_cloud_ef
     laserCloudmsg.header.frame_id = tf_world_frame;
     pub_laser_cloud_effect_world.publish(laserCloudmsg);
     publish_count -= options::PUBFRAME_PERIOD;
+}
+
+void Localizer::PublishUpdatedMap(const ros::Publisher &pub_updated_map) {
+    if (updated_map->empty()) {
+        return;
+    }
+
+    sensor_msgs::PointCloud2 updatedMapMsg;
+    pcl::toROSMsg(*updated_map, updatedMapMsg);
+    updatedMapMsg.header.stamp = ros::Time().fromSec(lidar_end_time);
+    updatedMapMsg.header.frame_id = tf_world_frame;
+    pub_updated_map.publish(updatedMapMsg);
 }
 
 void Localizer::Savetrajectory(const std::string &traj_file) {

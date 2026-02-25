@@ -27,7 +27,6 @@ public:
         nh.param<std::string>("publish/tf_world_frame", tf_world_frame, "camera_init");
 
         pub_origin_map = nh.advertise<sensor_msgs::PointCloud2>("/origin_map", 1);
-        pub_new_points = nh.advertise<sensor_msgs::PointCloud2>("/updated_map", 100000);
     }
 
     void AddOriginMap(CloudPtr origin_map) {
@@ -60,13 +59,15 @@ public:
         std::cout << "Global map loaded. Total voxels: " << voxel_hash_map.size() << std::endl;
     }
 
-    void AddPoints(const PointVector &cloud) {
+    void AddPoints(const PointVector &cloud, 
+                   pcl::PointCloud<pcl::PointXYZ>::Ptr new_points) {
         for (auto pt : cloud) {
-            AddPoint(pt);
+            AddPoint(pt, new_points);
         }
     }
 
-    void AddPoint(const PointType &point) {
+    void AddPoint(const PointType &point, 
+                  pcl::PointCloud<pcl::PointXYZ>::Ptr new_points) {
         Voxel voxel(point.x, point.y, point.z, block_size);
         VoxelHashMap::iterator search = voxel_hash_map.find(voxel);
         if (search != voxel_hash_map.end()) {
@@ -74,9 +75,7 @@ public:
             voxel_block.AddNewPoint(Point3f(point.x, point.y, point.z));
 
             if (voxel_block.IsTemporaryPointsFull()) {
-                pcl::PointCloud<pcl::PointXYZ>::Ptr new_points(new pcl::PointCloud<pcl::PointXYZ>);
                 voxel_block.UpdateOctree(new_points);
-                PubNewPoints(new_points);
             }
         } else {
             VoxelBlock voxel_block(block_size, block_resolution, temporary_map_points_threshold);
@@ -85,7 +84,9 @@ public:
         }
     }
 
-    int SearchCorrespondMapPoints(const PointType &point, PointVector &correspond_points) {
+    int SearchCorrespondMapPoints(const PointType &point,
+                                  PointVector &correspond_points,
+                                  pcl::PointCloud<pcl::PointXYZ>::Ptr new_points) {
         Point3f pt3f(point.x, point.y, point.z);
 
         int search_success = 0;
@@ -103,12 +104,12 @@ public:
             if (search_success) return 2;
             
             search_success = voxel_block.SearchFromTemporaryMapPoints(pt3f, search_radius, correspond_points);
-            AddPoint(point);
+            AddPoint(point, new_points);
             if (search_success) return 1;
             else return 0;
             
         } else {
-            AddPoint(point);
+            AddPoint(point, new_points);
             return 0;
         }
     }
@@ -122,16 +123,6 @@ public:
         pub_origin_map.publish(laserCloudmsg);
     }
 
-    void PubNewPoints(const pcl::PointCloud<pcl::PointXYZ>::Ptr new_points) {
-        sensor_msgs::PointCloud2 new_pt_msg;
-        pcl::toROSMsg(*new_points, new_pt_msg);
-        new_pt_msg.width = new_points->size();
-        new_pt_msg.height = 1;
-        new_pt_msg.header.stamp = ros::Time::now();
-        new_pt_msg.header.frame_id = tf_world_frame;
-        pub_new_points.publish(new_pt_msg);
-    }
-
 private:
     VoxelHashMap voxel_hash_map;
     double block_size;
@@ -143,7 +134,6 @@ private:
 
     ros::NodeHandle nh;
     ros::Publisher pub_origin_map;
-    ros::Publisher pub_new_points;
     std::string tf_world_frame;
 };
 

@@ -60,10 +60,20 @@ public:
     void AddOriginPoint(const Point3f &point) {
         origin_map_points.emplace_back(point);
         origin_map_points_num++;
+        static_map_points.emplace_back(point);
+
+        int sample_x = std::fabs(std::fmod(point.x, block_size) / block_resolution);
+        int sample_y = std::fabs(std::fmod(point.y, block_size) / block_resolution);
+        int sample_z = std::fabs(std::fmod(point.z, block_size) / block_resolution);
+        int sample_place = sample_x  + 
+                            sample_y * block_size / block_resolution + 
+                            sample_z * block_size / block_resolution * block_size / block_resolution;
+        sample_array[sample_place] = true;
     }
 
     void InitOriginOctree() {
         origin_map_points_octree.Initialize(origin_map_points, params);
+        static_map_points_octree.Initialize(static_map_points, params);
     }
 
     void AddNewPoint(const Point3f &point) {

@@ -86,7 +86,7 @@ Visualization Manager:
           Use Fixed Frame: true
           Use rainbow: true
           Value: true
-        - Alpha: 0.5
+        - Alpha: 0.30000001192092896
           Autocompute Intensity Bounds: true
           Autocompute Value Bounds:
             Max Value: 15
@@ -132,7 +132,7 @@ Visualization Manager:
           Min Color: 238; 238; 236
           Name: updated_map
           Position Transformer: XYZ
-          Queue Size: 10
+          Queue Size: 1
           Selectable: false
           Size (Pixels): 2
           Size (m): 0.05000000074505806
@@ -280,5 +280,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1848
-  X: 72
-  Y: 27
+  X: 2980
+  Y: 84
