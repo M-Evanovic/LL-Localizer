@@ -47,6 +47,7 @@ public:
             } else {
                 VoxelBlock voxel_block(block_size, block_resolution, temporary_map_points_threshold);
                 voxel_block.AddOriginPoint(Point3f(point.x, point.y, point.z));
+                voxel_block.is_origin = true;
                 voxel_hash_map[voxel] = std::move(voxel_block);
             }
         }
