@@ -1,0 +1,23 @@
+services:
+  ll_localizer:
+    build:
+      context: ..
+      dockerfile: docker/dockerfile
+    image: ll_localizer
+    container_name: ll_localizer
+    volumes:
+      - ../:/root/catkin_ws/src/LL-Localizer # Volumes in entire LL-Localizer folder to allow customization
+      - ${HOME}/data_byu/bags/longterm_mapping/ros1_bags:/bags # Change to match location of bag data
+      - /tmp/.X11-unix:/tmp/.X11-unix # Needed to display RViz within the container
+    environment:
+      DISPLAY: "${DISPLAY}"
+      DISABLE_ROS1_EOL_WARNINGS: 1
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: all
+    runtime: nvidia
+    working_dir: /root/catkin_ws
+    network_mode: host
+    stdin_open: true
+    tty: true
+    # command: ["/ros_entrypoint.sh", "roscore"]
+    

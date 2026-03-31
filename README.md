@@ -27,7 +27,9 @@ All experiments, including both simulation and real-world experiments in paper a
 - PCL 
 
 ## Build
-```
+
+### Local
+``` bash
 mkdir -p /workspace/src
 cd /workspace/src
 git clone https://github.com/M-Evanovic/LL-Localizer.git
@@ -35,6 +37,32 @@ cd /workspace
 catkin build
 source devel/setup.bash
 ```
+
+### Docker
+<details>
+  <summary>Docker details (click to expand)</summary>
+
+  > Docker setup was tested on Ubuntu 24.04.
+
+  Need to give docker permission to use gui. Run the following on your host machine.
+
+  ``` bash
+  xhost +local:docker
+  ```
+
+  Clone repo, build docker image, and start container.
+  ``` bash
+  git clone https://github.com/M-Evanovic/LL-Localizer.git
+  cd LL-Localizer
+  ./docker/run_docker.sh
+  ```
+
+  In a new terminal, enter the container so you can launch ll_localizer in one and play a rosbag in another.
+  > Make sure to change the volume path for your bags in the `docker/compose.yaml` file to match the path to your data.
+  ```bash
+  docker exec -it ll_localizer bash
+  ```
+</details>
 
 ## Run SLAM Mode
 - Set the path ```/localization_param/map_file_name``` to ```" "``` in ```/config/config.yaml```. When no prior map is available, the system automatically switches to SLAM mode.
@@ -58,6 +86,23 @@ roslaunch ll_localizer localizer_velodyne.launch
 ```
 rosbag play yourbag.bag
 ```
+
+## Debug
+<details>
+  <summary><strong>Debug Ouster</strong></summary>
+
+  - If you get an error when running an ouster saying it can't find the 'ring' field, it's likely because you have a newer lidar. The old lidar's ring fild was a `uint8_t` but the newer ones are `uint16_t`. This change will need to be made in `pointcloud_preprocess.h` on lines 34 and 50.
+  
+</details>
+
+<details>
+  <summary><strong>Immediate Crash</strong></summary>
+
+  - If ll_localizer crashes right after you start playing your rosbag, your lidar points might contain NaN values. Remove NaN values from data before processing. This was implemented for the ouster lidar on lines 144-146 of `pointcloud_preprocess.cc`. Similar should be possible with the other lidar types.
+
+</details>
+
+
 
 ## Datasets
 - [NCLT](https://robots.engin.umich.edu/nclt/): The University of Michigan North Campus Long-Term Vision and LIDAR Dataset
