@@ -82,11 +82,69 @@ void PointCloudPreprocess::AviaHandler(const livox_ros_driver::CustomMsg::ConstP
     }
 }
 
+// Copied directly from newer version of PCL
+template <typename PointT> void
+removeNaNFromPointCloud (const pcl::PointCloud<PointT> &cloud_in,
+                            pcl::PointCloud<PointT> &cloud_out,
+                            pcl::Indices &index)
+{
+   // If the clouds are not the same, prepare the output
+   if (&cloud_in != &cloud_out)
+   {
+     cloud_out.header = cloud_in.header;
+     cloud_out.resize (cloud_in.size ());
+     cloud_out.sensor_origin_ = cloud_in.sensor_origin_;
+     cloud_out.sensor_orientation_ = cloud_in.sensor_orientation_;
+   }
+   // Reserve enough space for the indices
+   index.resize (cloud_in.size ());
+  
+   // If the data is dense, we don't need to check for NaN
+   if (cloud_in.is_dense)
+   {
+     // Simply copy the data
+     cloud_out = cloud_in;
+     for (std::size_t j = 0; j < cloud_out.size (); ++j)
+       index[j] = j;
+   }
+   else
+   {
+     std::size_t j = 0;
+     for (std::size_t i = 0; i < cloud_in.size (); ++i)
+     {
+       if (!std::isfinite (cloud_in[i].x) ||
+           !std::isfinite (cloud_in[i].y) ||
+           !std::isfinite (cloud_in[i].z))
+         continue;
+       cloud_out[j] = cloud_in[i];
+       index[j] = i;
+       j++;
+     }
+     if (j != cloud_in.size ())
+     {
+       // Resize to the correct size
+       cloud_out.resize (j);
+       index.resize (j);
+     }
+  
+     cloud_out.height = 1;
+     cloud_out.width  = static_cast<std::uint32_t>(j);
+  
+     // Removing bad points => dense (note: 'dense' doesn't mean 'organized')
+     cloud_out.is_dense = true;
+   }
+}
+
 void PointCloudPreprocess::Oust64Handler(const sensor_msgs::PointCloud2::ConstPtr &msg) {
     cloud_out.clear();
     cloud_full.clear();
     pcl::PointCloud<ouster_ros::Point> pl_orig;
     pcl::fromROSMsg(*msg, pl_orig);
+
+    // Remove NaNs
+    std::vector<int> indices;
+    removeNaNFromPointCloud(pl_orig, pl_orig, indices);
+
     int plsize = pl_orig.size();
     cloud_out.reserve(plsize);
 

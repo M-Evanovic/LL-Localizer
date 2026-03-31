@@ -1,0 +1,40 @@
+# Start from a ROS Noetic base image.
+FROM ros:noetic
+
+# Install common build tools and necessary dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    libgoogle-glog-dev \
+    libeigen3-dev \
+    libpcl-dev \
+    libtbb-dev \
+    python3-catkin-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+# --- Install ROS Dependencies ---
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-noetic-catkin \
+    ros-noetic-rviz \
+    ros-noetic-pcl-ros \
+    ros-noetic-eigen-conversions \
+    pcl-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+# --- Copy in LL-Localizer Source Code ---
+# Set the working directory
+WORKDIR /root/catkin_ws/src/
+
+# Copy your project source code into the Docker image
+COPY . ./LL-Localizer
+
+WORKDIR /root/catkin_ws
+# Build the ROS workspace
+RUN /bin/bash -c "source /opt/ros/noetic/setup.bash && \
+    catkin_make -j6 --pkg ll_localizer"
+
+
+RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc && \
+    echo "if [ -f ~/catkin_ws/devel/setup.bash ]; then" >> ~/.bashrc && \
+    echo "  source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc && \
+    echo "fi" >> ~/.bashrc
+
